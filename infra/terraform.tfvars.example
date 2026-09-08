@@ -1,0 +1,15 @@
+# Copy to terraform.tfvars and adjust. Do NOT commit terraform.tfvars.
+aws_region       = "us-east-1"
+environment      = "dev"
+
+# Restrict SSH to your own IP, e.g. "203.0.113.10/32"
+ssh_allowed_cidr = "0.0.0.0/0"
+
+# Name of an existing EC2 key pair (optional)
+key_pair_name    = ""
+
+# Docker image published by the CI pipeline
+app_image        = "ghcr.io/patriciadssilva/taskflow-api:latest"
+
+# Provide the database password via environment, never in this file:
+#   export TF_VAR_db_password="a-strong-password"

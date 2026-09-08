@@ -1,0 +1,14 @@
+node_modules
+coverage
+.git
+.github
+infra
+test
+docs
+*.md
+.env
+.env.*
+.eslintrc.json
+.eslintignore
+jest.config.js
+docker-compose.yml
