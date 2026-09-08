@@ -9,7 +9,7 @@ ssh_allowed_cidr = "0.0.0.0/0"
 key_pair_name    = ""
 
 # Docker image published by the CI pipeline
-app_image        = "ghcr.io/patriciadssilva/taskflow-api:latest"
+app_image        = "ghcr.io/patriciassrs/taskflow-api:latest"
 
 # Provide the database password via environment, never in this file:
 #   export TF_VAR_db_password="a-strong-password"

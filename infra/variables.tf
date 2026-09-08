@@ -79,5 +79,5 @@ variable "db_password" {
 variable "app_image" {
   description = "Docker image reference for the API, pulled by the EC2 user-data script"
   type        = string
-  default     = "ghcr.io/patriciadssilva/taskflow-api:latest"
+  default     = "ghcr.io/patriciassrs/taskflow-api:latest"
 }
