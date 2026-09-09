@@ -1,414 +1,380 @@
 <title>TaskFlow API — Fase 1</title>
-<meta name="description" content="Documento de entrega da Fase 1 (Configuração e Automação Inicial) do projeto TaskFlow API — DevOps na Prática, PUCRS Online." />
+<meta name="description" content="Entrega da Fase 1 (Configuração e Automação Inicial) — DevOps na Prática — Patricia dos Santos Silva." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;0,900;1,400&display=swap" />
 
 <style>
   :root {
-    /* Light — warm paper with a slight blue bias toward the institutional accent */
-    --paper: #f6f7f9;
-    --surface: #ffffff;
-    --ink: #1b2230;
-    --ink-soft: #48505f;
-    --muted: #6b7482;
-    --rule: #d7dce3;
-    --rule-strong: #b9c1cc;
-    --accent: #1f3a93;        /* deep institutional blue */
-    --accent-soft: #e8ecf8;
-    --gold: #9a6f24;          /* PUCRS-ish ochre, used sparingly */
-    --gold-soft: #f4ecdb;
-    --ok: #1e7a4d;
-    --ok-soft: #e2f1e8;
-    --shadow: 0 1px 2px rgba(20, 28, 46, .06), 0 8px 28px rgba(20, 28, 46, .06);
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --paper: #13161c;
-      --surface: #1b1f27;
-      --ink: #e7e9ee;
-      --ink-soft: #b7bdca;
-      --muted: #8b93a1;
-      --rule: #2c313b;
-      --rule-strong: #3b414d;
-      --accent: #7ea2ff;
-      --accent-soft: #21283a;
-      --gold: #d9a94e;
-      --gold-soft: #2c2618;
-      --ok: #5cc08a;
-      --ok-soft: #16241d;
-      --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 10px 30px rgba(0, 0, 0, .35);
-    }
-  }
-
-  :root[data-theme="dark"] {
-    --paper: #13161c;
-    --surface: #1b1f27;
-    --ink: #e7e9ee;
-    --ink-soft: #b7bdca;
-    --muted: #8b93a1;
-    --rule: #2c313b;
-    --rule-strong: #3b414d;
-    --accent: #7ea2ff;
-    --accent-soft: #21283a;
-    --gold: #d9a94e;
-    --gold-soft: #2c2618;
-    --ok: #5cc08a;
-    --ok-soft: #16241d;
-    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 10px 30px rgba(0, 0, 0, .35);
+    --ink: #2b2b33;
+    --ink-soft: #4a4a55;
+    --indigo: #3a3f8f;        /* headings / section titles */
+    --indigo-deep: #2e3170;
+    --bronze: #9c7b3f;        /* "SEÇÃO N" + eyebrow */
+    --box: #eeeef7;           /* lavender content box */
+    --box-border: #dcdcec;
+    --rule-a: #3a3f8f;
+    --rule-b: #b9902f;
+    --paper: #ffffff;
+    --stage: #6b6b74;         /* area around the slides on screen */
   }
 
   * { box-sizing: border-box; }
 
+  html { background: var(--stage); }
+
   body {
     margin: 0;
-    background: var(--paper);
     color: var(--ink);
-    font-family: "Source Sans 3", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-    font-size: 17px;
-    line-height: 1.65;
-    -webkit-font-smoothing: antialiased;
+    font-family: "Lato", "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
   }
 
-  .page {
-    max-width: 46rem;
-    margin: 0 auto;
-    padding: clamp(1.5rem, 4vw, 4rem) clamp(1.1rem, 4vw, 3rem) 5rem;
-  }
-
-  /* ---- Masthead ---- */
-  .masthead {
-    border-bottom: 2px solid var(--ink);
-    padding-bottom: 1.5rem;
-    margin-bottom: 2.5rem;
-  }
-  .eyebrow {
-    font-size: .78rem;
-    letter-spacing: .14em;
-    text-transform: uppercase;
-    color: var(--gold);
-    font-weight: 700;
-    margin: 0 0 .9rem;
-  }
-  h1 {
-    font-family: "Spectral", Georgia, "Times New Roman", serif;
-    font-weight: 700;
-    font-size: clamp(2rem, 5.5vw, 2.9rem);
-    line-height: 1.1;
-    letter-spacing: -.01em;
-    text-wrap: balance;
-    margin: 0 0 .8rem;
-  }
-  .lede {
-    font-size: 1.05rem;
-    color: var(--ink-soft);
-    margin: 0 0 1.4rem;
-    max-width: 40rem;
-  }
-  .meta {
+  .deck {
     display: flex;
-    flex-wrap: wrap;
-    gap: .4rem 2rem;
-    font-size: .92rem;
-    color: var(--muted);
-  }
-  .meta div { display: flex; gap: .5rem; }
-  .meta dt {
-    text-transform: uppercase;
-    letter-spacing: .08em;
-    font-size: .72rem;
-    font-weight: 700;
-    color: var(--gold);
-    padding-top: .12rem;
-  }
-  .meta dd { margin: 0; color: var(--ink-soft); font-weight: 500; }
-
-  /* ---- Repo strip ---- */
-  .repo {
-    display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: .7rem;
-    margin: 1.6rem 0 0;
-    padding: .7rem .95rem;
-    background: var(--accent-soft);
-    border: 1px solid var(--rule);
-    border-radius: 8px;
-    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: .86rem;
-    word-break: break-all;
+    gap: 20px;
+    padding: 28px 16px 60px;
   }
-  .repo svg { flex: none; color: var(--accent); }
-  .repo a { color: var(--accent); text-decoration: none; font-weight: 500; }
-  .repo a:hover { text-decoration: underline; }
 
-  /* ---- Sections ---- */
-  section { margin-top: 3rem; }
-  .sec-head {
+  /* Each slide is A4 landscape (297 x 210 mm), scaled to fit on screen. */
+  .slide {
+    position: relative;
+    width: 297mm;
+    height: 210mm;
+    background: var(--paper);
+    overflow: hidden;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, .28);
+    padding: 20mm 22mm;
+  }
+
+  /* ---------- content-page furniture ---------- */
+  .phead {
     display: flex;
-    align-items: baseline;
-    gap: .9rem;
-    border-bottom: 1px solid var(--rule-strong);
-    padding-bottom: .5rem;
-    margin-bottom: 1.4rem;
+    justify-content: space-between;
+    align-items: flex-end;
+    font-size: 12px;
   }
-  .sec-num {
-    font-family: "Spectral", Georgia, serif;
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: var(--gold);
-    font-variant-numeric: tabular-nums;
-  }
-  h2 {
-    font-family: "Spectral", Georgia, serif;
-    font-weight: 600;
-    font-size: 1.5rem;
-    letter-spacing: -.005em;
-    margin: 0;
-    text-wrap: balance;
-  }
-  h3 {
-    font-family: "Source Sans 3", sans-serif;
-    font-size: .8rem;
-    font-weight: 700;
-    letter-spacing: .09em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin: 1.8rem 0 .6rem;
-  }
-  section > p:first-of-type { margin-top: 0; }
-  p { margin: .8rem 0; }
-  strong { font-weight: 600; color: var(--ink); }
-  a { color: var(--accent); }
-
-  ul { margin: .7rem 0; padding-left: 1.15rem; }
-  li { margin: .35rem 0; padding-left: .2rem; }
-  li::marker { color: var(--rule-strong); }
-
-  code {
-    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: .84em;
-    background: var(--accent-soft);
-    padding: .1em .4em;
-    border-radius: 4px;
-    word-break: break-word;
-  }
-
-  .pipeline {
-    list-style: none;
-    margin: 1rem 0;
-    padding: 0;
-    counter-reset: step;
-    display: grid;
-    gap: .55rem;
-  }
-  .pipeline li {
-    counter-increment: step;
-    display: grid;
-    grid-template-columns: 1.7rem 1fr;
-    gap: .7rem;
-    padding: 0;
-    align-items: start;
-  }
-  .pipeline li::before {
-    content: counter(step);
-    font-family: "JetBrains Mono", monospace;
-    font-size: .8rem;
-    font-weight: 500;
-    color: var(--accent);
-    background: var(--accent-soft);
-    border: 1px solid var(--rule);
-    border-radius: 5px;
-    width: 1.7rem;
-    height: 1.7rem;
-    display: grid;
-    place-items: center;
-  }
-  .pipeline li::marker { content: none; }
-
-  /* ---- Verification callout ---- */
-  .verify {
-    margin: 1.4rem 0 0;
-    border: 1px solid var(--rule);
-    border-left: 3px solid var(--ok);
-    background: var(--surface);
-    border-radius: 8px;
-    padding: 1.1rem 1.2rem;
-    box-shadow: var(--shadow);
-  }
-  .verify p { margin: 0 0 .7rem; font-size: .9rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; font-weight: 700; }
-  .checks { display: grid; gap: .5rem; }
-  .check {
-    display: grid;
-    grid-template-columns: 1.1rem 1fr auto;
-    gap: .65rem;
-    align-items: baseline;
-    font-size: .95rem;
-  }
-  .check svg { color: var(--ok); transform: translateY(2px); }
-  .check .val {
-    font-family: "JetBrains Mono", monospace;
-    font-size: .84rem;
+  .brand { line-height: 1.1; letter-spacing: .06em; color: var(--indigo); }
+  .brand small {
+    display: block;
+    font-size: 8.5px;
+    letter-spacing: .18em;
     color: var(--ink-soft);
-    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+  }
+  .brand b { font-weight: 900; }
+  .brand span { font-weight: 400; }
+  .phead .sec {
+    color: var(--indigo-deep);
+    font-weight: 700;
+  }
+  .phead .sec i { font-style: normal; font-weight: 400; }
+  .rule {
+    height: 3px;
+    margin: 8px 0 26px;
+    background: linear-gradient(90deg, var(--rule-a) 0%, var(--rule-b) 62%, rgba(185,144,47,0) 100%);
   }
 
-  /* ---- Infra table ---- */
-  .table-wrap { overflow-x: auto; margin: 1rem 0; }
-  table { border-collapse: collapse; width: 100%; font-size: .92rem; }
-  th, td { text-align: left; padding: .55rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
-  thead th {
-    font-size: .72rem;
+  h2.qh {
+    font-size: 15px;
+    font-weight: 900;
+    letter-spacing: .01em;
+    color: var(--ink);
+    margin: 0 0 14px;
     text-transform: uppercase;
-    letter-spacing: .08em;
-    color: var(--muted);
-    border-bottom: 1px solid var(--rule-strong);
   }
-  tbody tr:last-child td { border-bottom: none; }
-  td code { background: none; padding: 0; color: var(--accent); }
-
-  footer {
-    margin-top: 4rem;
-    padding-top: 1.2rem;
-    border-top: 1px solid var(--rule);
-    font-size: .84rem;
-    color: var(--muted);
+  h2.qh .tool {
+    text-transform: none;
+    font-weight: 700;
+    color: var(--indigo);
+    margin-left: 10px;
+  }
+  .hint {
+    font-size: 11px;
+    color: var(--bronze);
+    margin: -10px 0 16px;
   }
 
-  @media (max-width: 34rem) {
-    .check { grid-template-columns: 1.1rem 1fr; }
-    .check .val { grid-column: 2; }
+  .box {
+    background: var(--box);
+    border: 1px solid var(--box-border);
+    border-radius: 3px;
+    padding: 20px 22px;
+  }
+  .box p { margin: 0 0 11px; }
+  .box p:last-child { margin-bottom: 0; }
+  .box b { color: var(--indigo-deep); }
+  .box ul { margin: 6px 0 11px; padding-left: 20px; }
+  .box li { margin: 3px 0; }
+  .box a { color: var(--indigo); word-break: break-all; }
+  code {
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    font-size: .9em;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    * { animation: none !important; transition: none !important; }
+  .link-line { margin-top: 14px; font-size: 13px; }
+  .link-line b { color: var(--ink); }
+
+  /* ---------- cover ---------- */
+  .cover {
+    color: #fff;
+    background:
+      radial-gradient(120% 90% at 78% 42%, rgba(214,164,90,.55) 0%, rgba(214,164,90,0) 42%),
+      radial-gradient(120% 120% at 18% 20%, rgba(43,74,140,.85) 0%, rgba(43,74,140,0) 55%),
+      linear-gradient(120deg, #0b1a33 0%, #16305c 45%, #23407a 65%, #3a2f63 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 40mm;
+  }
+  .cover .wm {
+    position: absolute;
+    top: 18mm;
+    left: 22mm;
+    font-size: 15px;
+    letter-spacing: .06em;
+  }
+  .cover .wm b { font-weight: 900; }
+  .cover .kicker {
+    font-size: 15px;
+    letter-spacing: .04em;
+    color: rgba(255,255,255,.82);
+    margin-bottom: 14px;
+  }
+  .cover h1 {
+    font-size: 34px;
+    font-weight: 900;
+    margin: 0 0 6px;
+  }
+  .cover .phase {
+    font-size: 19px;
+    font-weight: 400;
+    color: rgba(255,255,255,.9);
+    margin-bottom: 60px;
+  }
+  .cover .who {
+    font-size: 11px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.7);
+    margin-bottom: 8px;
+  }
+  .cover .name {
+    font-size: 22px;
+    font-weight: 700;
+    color: #e7c79a;
   }
 
+  /* ---------- section divider ---------- */
+  .divider { display: flex; flex-direction: column; justify-content: center; padding-left: 34mm; }
+  .divider .top-rule,
+  .divider .bot-rule {
+    position: absolute;
+    left: 22mm; right: 22mm;
+    height: 2px;
+    background: linear-gradient(90deg, var(--rule-a), var(--rule-b) 70%, rgba(185,144,47,0));
+  }
+  .divider .top-rule { top: 20mm; }
+  .divider .bot-rule { bottom: 20mm; }
+  .divider .wm { position: absolute; top: 24mm; left: 22mm; font-size: 12px; color: var(--indigo); letter-spacing: .06em; }
+  .divider .wm small { display: block; font-size: 8.5px; letter-spacing: .18em; color: var(--ink-soft); font-weight: 700; }
+  .divider .wm b { font-weight: 900; }
+  .divider .snum {
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: .06em;
+    color: var(--bronze);
+    margin-bottom: 10px;
+  }
+  .divider .stitle {
+    font-size: 34px;
+    font-weight: 900;
+    color: var(--indigo);
+    line-height: 1.15;
+    max-width: 20ch;
+  }
+
+  /* ---------- screen scaling ---------- */
+  @media screen {
+    .slide {
+      transform: scale(var(--s, .62));
+      transform-origin: top center;
+      margin-bottom: calc((var(--s, .62) - 1) * 210mm);
+    }
+  }
+  @media screen and (max-width: 1200px) { .slide { --s: .52; } }
+  @media screen and (max-width: 900px)  { .slide { --s: .40; } }
+  @media screen and (max-width: 640px)  { .slide { --s: .30; } }
+
+  /* ---------- print: real landscape PDF ---------- */
+  @page { size: A4 landscape; margin: 0; }
   @media print {
-    :root { --paper: #fff; --surface: #fff; --shadow: none; }
-    body { font-size: 11pt; line-height: 1.5; }
-    .page { max-width: none; padding: 0; }
-    section { page-break-inside: avoid; }
-    .verify, .repo { box-shadow: none; }
-    a { color: var(--ink); text-decoration: none; }
+    html, body { background: #fff; }
+    .deck { display: block; padding: 0; gap: 0; }
+    .slide {
+      transform: none;
+      margin: 0;
+      box-shadow: none;
+      page-break-after: always;
+      break-after: page;
+    }
+    .slide:last-child { page-break-after: auto; }
   }
 </style>
 
-<div class="page">
+<div class="deck">
 
-  <header class="masthead">
-    <p class="eyebrow">DevOps na Prática · Fase 1 — Configuração e Automação Inicial</p>
-    <h1>TaskFlow API</h1>
-    <p class="lede">API REST para gerenciamento de tarefas (to-do list), usada como base para praticar um fluxo DevOps completo: integração contínua, containers e infraestrutura como código.</p>
-    <dl class="meta">
-      <div><dt>Estudante</dt><dd>Patricia dos Santos Silva</dd></div>
-      <div><dt>Curso</dt><dd>PUCRS Online — Graduação</dd></div>
-      <div><dt>Entrega</dt><dd>Fase 1 de 4</dd></div>
-    </dl>
-    <div class="repo">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
-      <a href="https://github.com/PatriciaSSRS/taskflow-ap">github.com/PatriciaSSRS/taskflow-ap</a>
+  <!-- ========== COVER ========== -->
+  <div class="slide cover">
+    <div class="wm">GRADU<b>PUCRS</b> online</div>
+    <p class="kicker">TEMPLATE PARA ENTREGA DO PROJETO DA DISCIPLINA</p>
+    <h1>DevOps na Prática</h1>
+    <p class="phase">Fase 1: Configuração e Automação Inicial</p>
+    <p class="who">Nome do estudante</p>
+    <p class="name">Patricia dos Santos Silva</p>
+  </div>
+
+  <!-- ========== SEÇÃO 1 — divider ========== -->
+  <div class="slide divider">
+    <div class="top-rule"></div>
+    <div class="wm"><small>GRADUAÇÃO</small><b>PUCRS</b> online</div>
+    <div class="snum">SEÇÃO 1</div>
+    <div class="stitle">Documentação de Planejamento</div>
+    <div class="bot-rule"></div>
+  </div>
+
+  <!-- ===== 1a ===== -->
+  <div class="slide">
+    <div class="phead">
+      <div class="brand"><small>GRADUAÇÃO</small><b>PUCRS</b> <span>online</span></div>
+      <div class="sec">SEÇÃO 1 – <i>Documentação de Planejamento</i></div>
     </div>
-  </header>
-
-  <!-- ============ SEÇÃO 1 ============ -->
-  <section>
-    <div class="sec-head"><span class="sec-num">1</span><h2>Documentação de Planejamento</h2></div>
-
-    <h3>a) Descrição do projeto, objetivos e requisitos</h3>
-    <p><strong>Descrição.</strong> A TaskFlow API é uma API REST para gerenciamento de tarefas (to-do list), permitindo criar, organizar e acompanhar tarefas por status (<em>a fazer</em>, <em>em andamento</em>, <em>concluída</em>) e por prioridade (<em>baixa</em>, <em>média</em>, <em>alta</em>).</p>
-    <p><strong>Objetivos.</strong> Praticar um fluxo DevOps completo, da integração contínua ao provisionamento de infraestrutura como código, entregando uma API estável, testada automaticamente e com ambiente reproduzível via containers.</p>
-    <p><strong>Requisitos funcionais.</strong></p>
-    <ul>
-      <li>CRUD de tarefas e de usuários.</li>
-      <li>Autenticação via JWT.</li>
-      <li>Filtros de listagem por status e prioridade.</li>
-    </ul>
-    <p><strong>Requisitos não funcionais.</strong></p>
-    <ul>
-      <li>Cobertura de testes automatizados.</li>
-      <li>Pipeline de CI executado a cada <code>push</code> e <code>pull request</code>.</li>
-      <li>Infraestrutura provisionada de forma automatizada via Terraform.</li>
-    </ul>
-
-    <h3>b) Plano de Integração Contínua</h3>
-    <p><strong>Ferramenta:</strong> GitHub Actions. &nbsp; <strong>Gatilho:</strong> cada <code>push</code> e cada <code>pull request</code> aberta contra a branch <code>main</code>.</p>
-    <p><strong>Etapas do pipeline:</strong></p>
-    <ul class="pipeline">
-      <li>Checkout do código.</li>
-      <li>Instalação das dependências com <code>npm ci</code>.</li>
-      <li>Lint com ESLint.</li>
-      <li>Execução dos testes automatizados com Jest e geração do relatório de cobertura.</li>
-      <li>Build da aplicação e da imagem Docker.</li>
-    </ul>
-    <p><strong>Critério de sucesso:</strong> o pipeline só é aprovado se lint, testes e build passarem sem erros. Falhas bloqueiam o merge da pull request (branch protection na <code>main</code>).</p>
-
-    <h3>c) Especificação detalhada da infraestrutura</h3>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Elemento</th><th>Definição</th></tr></thead>
-        <tbody>
-          <tr><td>Containers</td><td>Aplicação e banco de dados em containers Docker, orquestrados localmente via Docker Compose.</td></tr>
-          <tr><td>Banco de dados</td><td>PostgreSQL como instância gerenciada — Amazon RDS <code>db.t3.micro</code>, criptografado, sem acesso público.</td></tr>
-          <tr><td>Servidor de aplicação</td><td>Instância EC2 <code>t3.micro</code> (Ubuntu 22.04) que instala o Docker e sobe a imagem da API via <code>user_data</code>.</td></tr>
-          <tr><td>Rede</td><td>VPC <code>10.0.0.0/16</code> com subnet pública para a API e duas subnets privadas para o banco; security groups liberando apenas 22, 80 e 443 na aplicação e 5432 no banco somente a partir do SG da aplicação.</td></tr>
-          <tr><td>Endereço fixo</td><td>Elastic IP associado à instância da API.</td></tr>
-          <tr><td>Segredos e variáveis</td><td>Credenciais e variáveis sensíveis via secrets do GitHub Actions e <code>TF_VAR_*</code>, nunca versionadas no repositório.</td></tr>
-          <tr><td>Provisionamento</td><td>100% automatizado via Terraform (pasta <code>infra/</code>).</td></tr>
-        </tbody>
-      </table>
+    <div class="rule"></div>
+    <h2 class="qh">a) Descrição do projeto, seus objetivos e requisitos:</h2>
+    <div class="box">
+      <p><b>Descrição:</b> TaskFlow API é uma API REST para gerenciamento de tarefas (to-do list), permitindo criar, organizar e acompanhar tarefas por status (a fazer, em andamento, concluída) e prioridade.</p>
+      <p><b>Objetivos:</b> praticar um fluxo DevOps completo, da integração contínua ao provisionamento de infraestrutura como código, entregando uma API estável, testada automaticamente e com ambiente reproduzível via containers.</p>
+      <p><b>Requisitos funcionais:</b> CRUD de tarefas e de usuários, autenticação via JWT e filtros de listagem por status e prioridade.</p>
+      <p><b>Requisitos não funcionais:</b> cobertura de testes automatizados, pipeline de CI executado a cada push e infraestrutura provisionada de forma automatizada via Terraform.</p>
     </div>
-  </section>
+  </div>
 
-  <!-- ============ SEÇÃO 2 ============ -->
-  <section>
-    <div class="sec-head"><span class="sec-num">2</span><h2>Pipeline de Integração Contínua (CI)</h2></div>
-
-    <h3>a) Repositório de código</h3>
-    <p>Repositório criado no GitHub com estrutura organizada em pastas (<code>src</code>, <code>test</code>, <code>infra</code> e <code>.github/workflows</code>), <code>README</code> com instruções de execução, <code>.gitignore</code>, <code>.gitattributes</code> e template de pull request. A branch <code>main</code> tem proteção configurada exigindo pull request e checks de CI aprovados antes do merge.</p>
-    <p><strong>Link do repositório:</strong> <a href="https://github.com/PatriciaSSRS/taskflow-ap">https://github.com/PatriciaSSRS/taskflow-ap</a></p>
-
-    <h3>b) Pipeline de CI com GitHub Actions</h3>
-    <p>Pipeline implementado em <code>.github/workflows/ci.yml</code>, disparado a cada <code>push</code> e <code>pull request</code> contra a <code>main</code>. O job <strong>build-and-test</strong> executa checkout, <code>npm ci</code>, lint com ESLint e os testes com Jest (com relatório de cobertura) contra um serviço PostgreSQL 16; o relatório de cobertura é publicado como artefato. O job <strong>docker-build</strong> faz o build da imagem Docker da aplicação. O merge só é liberado se todos os checks passarem.</p>
-    <p><strong>Workflow:</strong> <a href="https://github.com/PatriciaSSRS/taskflow-ap/blob/main/.github/workflows/ci.yml">.github/workflows/ci.yml</a></p>
-  </section>
-
-  <!-- ============ SEÇÃO 3 ============ -->
-  <section>
-    <div class="sec-head"><span class="sec-num">3</span><h2>Scripts de Infraestrutura como Código</h2></div>
-
-    <h3>a) Provisionamento com Terraform</h3>
-    <p>Scripts Terraform (pasta <code>infra/</code>) que provisionam na AWS toda a infraestrutura necessária para rodar a API:</p>
-    <ul>
-      <li><code>network.tf</code> — VPC, Internet Gateway, subnet pública e duas subnets privadas (o RDS exige duas zonas de disponibilidade), tabela de rotas.</li>
-      <li><code>security_groups.tf</code> — SG da aplicação liberando apenas 22, 80 e 443; SG do banco liberando 5432 somente a partir do SG da aplicação.</li>
-      <li><code>ec2.tf</code> + <code>user_data.sh</code> — instância EC2 <code>t3.micro</code>, instalação do Docker e execução do container da API; Elastic IP.</li>
-      <li><code>rds.tf</code> — instância RDS PostgreSQL <code>db.t3.micro</code> em subnet group privado.</li>
-      <li><code>variables.tf</code>, <code>outputs.tf</code>, <code>terraform.tfvars.example</code> — parametrização e saídas (IP público e endpoint do RDS).</li>
-    </ul>
-    <p>O estado do Terraform não é versionado (pode conter a senha do RDS); o <code>infra/README.md</code> documenta a migração para um backend remoto S3 + DynamoDB.</p>
-    <p><strong>Link (pasta <code>infra/</code>):</strong> <a href="https://github.com/PatriciaSSRS/taskflow-ap/tree/main/infra">github.com/PatriciaSSRS/taskflow-ap/tree/main/infra</a></p>
-  </section>
-
-  <!-- ============ SEÇÃO 4 ============ -->
-  <section>
-    <div class="sec-head"><span class="sec-num">4</span><h2>Testes Automatizados</h2></div>
-    <p>Testes escritos com <strong>Jest</strong> e <strong>Supertest</strong>, separados em dois projetos: <code>unit</code> (utilitários de JWT, hash de senha e schemas de validação, sem I/O) e <code>integration</code> (fluxo completo da API — autenticação, usuários e tarefas — contra um PostgreSQL real). A aplicação é organizada em camadas <code>routes → controllers → services → repositories</code>, o que mantém as regras de negócio isoladas e testáveis.</p>
-    <p>Os testes rodam localmente com <code>npm test</code> e são <strong>integrados ao pipeline de CI</strong>: o job <code>build-and-test</code> executa <code>npm run test:coverage</code> a cada <code>push</code> e <code>pull request</code>, usando um container de serviço <code>postgres:16-alpine</code> e o banco <code>taskflow_test</code>. Uma falha de teste reprova o pipeline e bloqueia o merge.</p>
-
-    <div class="verify">
-      <p>Verificação local — <code>2026-09-08</code></p>
-      <div class="checks">
-        <div class="check"><svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M6.5 12.5 2 8l1.4-1.4 3.1 3.1L12.6 3 14 4.4z"/></svg><span>Testes automatizados (Jest)</span><span class="val">35 / 35 aprovados</span></div>
-        <div class="check"><svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M6.5 12.5 2 8l1.4-1.4 3.1 3.1L12.6 3 14 4.4z"/></svg><span>Cobertura de linhas</span><span class="val">≈ 91%</span></div>
-        <div class="check"><svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M6.5 12.5 2 8l1.4-1.4 3.1 3.1L12.6 3 14 4.4z"/></svg><span>Lint (ESLint)</span><span class="val">sem erros</span></div>
-        <div class="check"><svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M6.5 12.5 2 8l1.4-1.4 3.1 3.1L12.6 3 14 4.4z"/></svg><span>Terraform</span><span class="val">validate: OK</span></div>
-      </div>
+  <!-- ===== 1b ===== -->
+  <div class="slide">
+    <div class="phead">
+      <div class="brand"><small>GRADUAÇÃO</small><b>PUCRS</b> <span>online</span></div>
+      <div class="sec">SEÇÃO 1 – <i>Documentação de Planejamento</i></div>
     </div>
-  </section>
+    <div class="rule"></div>
+    <h2 class="qh">b) Plano de integração contínua:</h2>
+    <div class="box">
+      <p><b>Ferramenta:</b> GitHub Actions.</p>
+      <p><b>Gatilho:</b> o pipeline é disparado a cada push e a cada pull request aberta contra a branch main.</p>
+      <p><b>Etapas do pipeline:</b> (1) checkout do código; (2) instalação das dependências com <code>npm ci</code>; (3) lint com ESLint; (4) execução dos testes automatizados com Jest e geração do relatório de cobertura; (5) build da aplicação e da imagem Docker.</p>
+      <p><b>Critério de sucesso:</b> o pipeline só é aprovado se lint, testes e build passarem sem erros; falhas bloqueiam o merge da pull request.</p>
+    </div>
+  </div>
 
-  <footer>
-    TaskFlow API — entrega da Fase 1 (Configuração e Automação Inicial). Repositório: github.com/PatriciaSSRS/taskflow-ap · Licença MIT.
-  </footer>
+  <!-- ===== 1c ===== -->
+  <div class="slide">
+    <div class="phead">
+      <div class="brand"><small>GRADUAÇÃO</small><b>PUCRS</b> <span>online</span></div>
+      <div class="sec">SEÇÃO 1 – <i>Documentação de Planejamento</i></div>
+    </div>
+    <div class="rule"></div>
+    <h2 class="qh">c) Especificação detalhada da infraestrutura necessária:</h2>
+    <div class="box">
+      <p><b>Containers:</b> aplicação e banco de dados executam em containers Docker, orquestrados localmente via Docker Compose.</p>
+      <p><b>Banco de dados:</b> PostgreSQL, provisionado como instância gerenciada (Amazon RDS db.t3.micro).</p>
+      <p><b>Servidor de aplicação:</b> instância EC2 (t3.micro) rodando a imagem Docker da API.</p>
+      <p><b>Rede:</b> VPC (10.0.0.0/16) com subnet pública para a API e subnets privadas para o banco de dados, com security groups liberando apenas as portas necessárias (22, 80 e 443 na aplicação; 5432 no banco somente a partir do SG da aplicação).</p>
+      <p><b>Segredos e variáveis:</b> credenciais e variáveis sensíveis gerenciadas via secrets do GitHub Actions e <code>TF_VAR_*</code>, nunca versionadas no repositório.</p>
+      <p><b>Provisionamento:</b> 100% automatizado via Terraform, com os scripts versionados na pasta <code>/infra</code> do repositório.</p>
+    </div>
+  </div>
+
+  <!-- ========== SEÇÃO 2 — divider ========== -->
+  <div class="slide divider">
+    <div class="top-rule"></div>
+    <div class="wm"><small>GRADUAÇÃO</small><b>PUCRS</b> online</div>
+    <div class="snum">SEÇÃO 2</div>
+    <div class="stitle">Pipeline de Integração Contínua (CI)</div>
+    <div class="bot-rule"></div>
+  </div>
+
+  <!-- ===== 2a ===== -->
+  <div class="slide">
+    <div class="phead">
+      <div class="brand"><small>GRADUAÇÃO</small><b>PUCRS</b> <span>online</span></div>
+      <div class="sec">SEÇÃO 2 – <i>Pipeline de Integração Contínua</i></div>
+    </div>
+    <div class="rule"></div>
+    <h2 class="qh">a) Configuração de um repositório de código: <span class="tool">GitHub</span></h2>
+    <p class="hint">Insira o link de acesso ao repositório (GitHub).</p>
+    <div class="box">
+      <p>Repositório criado no GitHub com estrutura organizada em pastas (<code>src</code>, <code>test</code>, <code>infra</code> e <code>.github/workflows</code>), README com instruções de execução do projeto, arquivo <code>.gitignore</code> e proteção configurada na branch main, exigindo pull request e checks de CI aprovados antes do merge.</p>
+      <p class="link-line"><b>Link do repositório:</b> <a href="https://github.com/PatriciaSSRS/taskflow-ap">https://github.com/PatriciaSSRS/taskflow-ap</a></p>
+    </div>
+  </div>
+
+  <!-- ===== 2b ===== -->
+  <div class="slide">
+    <div class="phead">
+      <div class="brand"><small>GRADUAÇÃO</small><b>PUCRS</b> <span>online</span></div>
+      <div class="sec">SEÇÃO 2 – <i>Pipeline de Integração Contínua</i></div>
+    </div>
+    <div class="rule"></div>
+    <h2 class="qh">b) Implementação de um pipeline de CI usando um GitHub Actions:</h2>
+    <p class="hint">Insira o link de acesso ao repositório (GitHub).</p>
+    <div class="box">
+      <p>Pipeline implementado em <code>.github/workflows/ci.yml</code>, disparado a cada push e pull request contra a branch main. As etapas executadas são: checkout do código, instalação das dependências, lint com ESLint, execução dos testes automatizados com Jest (com relatório de cobertura, contra um serviço PostgreSQL) e build da imagem Docker da aplicação. O merge de uma pull request só é liberado se todas as etapas passarem com sucesso.</p>
+      <p class="link-line"><b>Link do repositório (com o workflow configurado):</b> <a href="https://github.com/PatriciaSSRS/taskflow-ap/blob/main/.github/workflows/ci.yml">https://github.com/PatriciaSSRS/taskflow-ap/blob/main/.github/workflows/ci.yml</a></p>
+    </div>
+  </div>
+
+  <!-- ========== SEÇÃO 3 — divider ========== -->
+  <div class="slide divider">
+    <div class="top-rule"></div>
+    <div class="wm"><small>GRADUAÇÃO</small><b>PUCRS</b> online</div>
+    <div class="snum">SEÇÃO 3</div>
+    <div class="stitle">Scripts de Infraestrutura como Código</div>
+    <div class="bot-rule"></div>
+  </div>
+
+  <!-- ===== 3a ===== -->
+  <div class="slide">
+    <div class="phead">
+      <div class="brand"><small>GRADUAÇÃO</small><b>PUCRS</b> <span>online</span></div>
+      <div class="sec">SEÇÃO 3 – <i>Scripts de Infraestrutura como Código</i></div>
+    </div>
+    <div class="rule"></div>
+    <h2 class="qh">a) Scripts para provisionamento de infraestrutura a partir da ferramenta: <span class="tool">Terraform</span></h2>
+    <p class="hint">Insira o link de acesso ao repositório (GitHub).</p>
+    <div class="box">
+      <p>Scripts Terraform para provisionar, na AWS, toda a infraestrutura necessária para rodar a API: instância EC2 para a aplicação containerizada, banco de dados RDS PostgreSQL, VPC com subnets pública e privadas, security groups liberando apenas as portas necessárias (22, 80 e 443) e um Elastic IP para acesso fixo à aplicação.</p>
+      <p class="link-line"><b>Link do repositório (pasta /infra):</b> <a href="https://github.com/PatriciaSSRS/taskflow-ap/tree/main/infra">https://github.com/PatriciaSSRS/taskflow-ap/tree/main/infra</a></p>
+    </div>
+  </div>
+
+  <!-- ===== 4 — testes automatizados ===== -->
+  <div class="slide">
+    <div class="phead">
+      <div class="brand"><small>GRADUAÇÃO</small><b>PUCRS</b> <span>online</span></div>
+      <div class="sec">SEÇÃO 4 – <i>Testes Automatizados</i></div>
+    </div>
+    <div class="rule"></div>
+    <h2 class="qh">Testes automatizados implementados e integrados:</h2>
+    <div class="box">
+      <p>Testes escritos com <b>Jest</b> e <b>Supertest</b>, separados em dois conjuntos: <code>unit</code> (utilitários de JWT, hash de senha e validação de dados) e <code>integration</code> (fluxo completo da API — autenticação, usuários e tarefas — contra um PostgreSQL real).</p>
+      <p>Os testes são <b>integrados ao pipeline de CI</b>: o job <code>build-and-test</code> executa <code>npm run test:coverage</code> a cada push e pull request, usando um container de serviço <code>postgres:16-alpine</code>. Uma falha de teste reprova o pipeline e bloqueia o merge.</p>
+      <p><b>Verificação local:</b> 35 de 35 testes aprovados · cobertura de linhas ≈ 91% · ESLint sem erros · <code>terraform validate</code> OK.</p>
+      <p class="link-line"><b>Link (pasta /test):</b> <a href="https://github.com/PatriciaSSRS/taskflow-ap/tree/main/test">https://github.com/PatriciaSSRS/taskflow-ap/tree/main/test</a></p>
+    </div>
+  </div>
 
 </div>
